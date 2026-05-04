@@ -15,6 +15,7 @@ def _make_config(
         num_layers=2,
         model_dim=model_dim,
         num_heads=4,
+        max_seq_len=32,
         device=torch.device(device),
         dtype=dtype,
         activation=activation,

@@ -1,6 +1,6 @@
 class PagedKVCache:
     """
-    This implementation of the cache removes external fragmentation and minimizes internal fragmentation.
+    This implementation of the cache removes external fragmentation and minimizes internal fragmentation (inspired by vLLM).
 
     We use a page table to keep track of which blocks in the table 
     """

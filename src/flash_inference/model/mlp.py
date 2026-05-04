@@ -14,5 +14,5 @@ class MLP(nn.Module):
         # non-linear activation between the linear transformations
         self.activation = ACTIVATIONS[config.activation]()
 
-    def forward(self, x: torch.tensor) -> torch.tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.W2(self.activation(self.W1(x)))
