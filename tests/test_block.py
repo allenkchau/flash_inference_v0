@@ -1,9 +1,8 @@
-import importlib
-
 import torch
 import torch.nn as nn
 
 from flash_inference.configs.model_config import ModelConfig
+from flash_inference.model.block import TransformerBlock
 
 
 def _make_config(
@@ -17,36 +16,13 @@ def _make_config(
         model_dim=model_dim,
         num_heads=4,
         max_seq_len=32,
+        vocab_size=1000,
         device=torch.device(device),
         dtype=dtype,
         activation="gelu",
     )
 
-
-def _load_block_class():
-    """
-    Keep block tests runnable while Attention is still under development.
-    If `Attention` is not exported yet, inject a temporary identity fallback.
-    """
-    attention_module = importlib.import_module("flash_inference.model.attention")
-
-    if not hasattr(attention_module, "Attention"):
-        class _FallbackAttention(nn.Module):
-            def __init__(self, config: ModelConfig):
-                super().__init__()
-
-            def forward(self, x: torch.Tensor) -> torch.Tensor:
-                return x
-
-        attention_module.Attention = _FallbackAttention
-
-    block_module = importlib.import_module("flash_inference.model.block")
-    block_module = importlib.reload(block_module)
-    return block_module.TransformerBlock
-
-
 def test_transformer_block_preserves_shape_dtype_and_device():
-    TransformerBlock = _load_block_class()
     x = torch.randn(2, 5, 16, dtype=torch.float32)
     block = TransformerBlock(_make_config(model_dim=x.shape[-1], dtype=x.dtype, device=x.device))
 
@@ -57,7 +33,6 @@ def test_transformer_block_preserves_shape_dtype_and_device():
 
 
 def test_transformer_block_has_expected_submodules():
-    TransformerBlock = _load_block_class()
     block = TransformerBlock(_make_config(model_dim=16))
 
     assert hasattr(block, "attn")
@@ -71,7 +46,6 @@ def test_transformer_block_has_expected_submodules():
 
 
 def test_transformer_block_calls_attention_once_mlp_once_and_uses_ln2():
-    TransformerBlock = _load_block_class()
     block = TransformerBlock(_make_config(model_dim=16))
     x = torch.randn(2, 3, 16)
 

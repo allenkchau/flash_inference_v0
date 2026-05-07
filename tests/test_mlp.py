@@ -16,6 +16,7 @@ def _make_config(
         model_dim=model_dim,
         num_heads=4,
         max_seq_len=32,
+        vocab_size=1000,
         device=torch.device(device),
         dtype=dtype,
         activation=activation,

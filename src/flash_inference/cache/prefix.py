@@ -1,3 +1,5 @@
+import torch
+
 class PrefixKVCache:
     """
     This implementation of the cache removes external fragmentation and minimizes internal fragmentation (inspired by SGLang).

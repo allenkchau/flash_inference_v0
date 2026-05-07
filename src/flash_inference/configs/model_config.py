@@ -12,6 +12,7 @@ class ModelConfig:
     model_dim: int
     num_heads: int
     max_seq_len: int
+    vocab_size: int
 
     device: torch.device
     dtype: torch.dtype
